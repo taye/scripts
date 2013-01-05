@@ -40,7 +40,7 @@ function imgUp ()
     key="486690f872c678126a2c09a9e196ce1b"
     uploadURL="http://imgur.com/api/upload.json"
 
-    file=$1
+    file=$(readlink -f $1)
 
     json=$(curl -s -F "image"=@"$file"  -F "key=$key" $uploadURL  | sed -e 's/\\//g') 
 
@@ -77,7 +77,7 @@ function imgDel () {
     key="486690f872c678126a2c09a9e196ce1b"
 
     del=`firstNonEmpty $1 $del`
-    curl -s  -F "key=$key" "https://api.imgur.com/3/image/$del"
+    curl -s  -F "key=$key" "https://imgur.com/api/delete/$del.json"
 }
 
 if [ $# == 0 ]; then

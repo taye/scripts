@@ -1,5 +1,3 @@
-load('Vector.js');
-
 function splode (n, steps, angleDiffRatio, precision) {
     var points = [],
         vector = new Vector (1, 0),

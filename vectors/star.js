@@ -1,26 +1,25 @@
-var Vector = Vector || {},
-    console = console || {log: function (){}},
-    print = print || console.log,
-    load = load || function (){};
 
-load('Vector.js');
-
-function star (n, rotation, precision) {
+function star (n, inset, rotation, precision, suffix) {
     'use strict';
  
-    var points = [],
+    var Vector = Vector || {},
+        points = [],
         sequence = [0, 1, -1, -1, 1],
         centre = new Vector(0, 0),
-        vertices = [],
+        triangles = [],
         vertexArray = [],
         angle = Math.PI * (1 / n),
         i;
 
+    i = i || 5;
+    inset = inset || 0.5;
     rotation = rotation || 0;
     precision = precision || 10;
+    suffix = suffix || '';
 
     for (i = 0; i < n * 2; i++) {
-        var point = Vector.J.rotateBy(rotation + angle * i).scale((i % 2 === 0) ? 1: 0.5);
+        var rot = rotation + angle * (i + (n % 2 ? 0.5: 0)),
+            point = Vector.J.rotateBy(rot).scale(i % 2 ? inset: 1);
 
         points.push(point);
     }
@@ -51,19 +50,26 @@ function star (n, rotation, precision) {
         seq = seq.map(wrap(points.length));
 
         for (var j = 0; j < seq.length; j++) {
-            vertices.push(points[seq[j]]);
-            string += seq[j] + '  ';
+            triangles.push(points[seq[j]]);
+            //string += seq[j] + '  ';
         }
-        vertices.push(centre);
-        print(string);
+
+        triangles.push(centre);
+        //print(string);
     }
 
-    for (i = 0; i < vertices.length; i++) {
-        vertexArray.push(vertices[i].x, vertices[i].y);
+    for (i = 0; i < triangles.length; i++) {
+        vertexArray.push(triangles[i].x, triangles[i].y);
     }
 
     function stringVectors (vectors, rowSize) {
-        var string = vectors[0].x + ',\t' + vectors[0].y;
+        var string = [
+                vectors[0].x.toFixed(precision),
+                suffix,
+                ',\t',
+                vectors[0].y.toFixed(precision),
+                suffix
+            ].join('');
 
         for (i = 1; i < vectors.length; i++) {
             string += ',\t';
@@ -72,17 +78,32 @@ function star (n, rotation, precision) {
                 string += '\n';
             }
 
-            string += vectors[i].x.toFixed(precision) + ',\t';
-            string += vectors[i].y.toFixed(precision);
+            string += [
+                vectors[i].x.toFixed(precision),
+                suffix,
+                ',\t',
+                vectors[i].y.toFixed(precision),
+                suffix
+            ].join('');
         }
         return string + '\n';
     }
 
+    print('Points:');
+    print('---------');
     print(stringVectors(points));
-    print(stringVectors(vertices, 3));
+
+    print('Triangles:');
+    print('----------');
+    print(stringVectors(triangles, 3));
 
     return {
         points: points,
+        triangles: triangles,
         vertexArray: vertexArray
     };
+}
+
+if (arguments && arguments.length) {
+    star.apply(this, arguments);
 }

@@ -71,9 +71,15 @@ Vector.prototype = {
         if (!other) {
             other = Vector.I;
         }
-        var correction = (this.y < 0) ? Math.PI : 0;
+        else {
+            return this.angle() - other.angle();
+        }
 
-        return correction + Math.acos(this.dot(other) / (this.magnitude() * other.magnitude()));
+        if (this.y < 0) {
+            return 2 * Math.PI - (new Vector(this.x, -this.y)).angle(other);
+        }
+
+        return Math.acos(this.dot(other) / (this.magnitude() * other.magnitude()));
     },
     rotateBy: function (angle) {
         if (angle > Math.PI) {

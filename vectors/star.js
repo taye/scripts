@@ -104,6 +104,3 @@ function star (n, inset, rotation, precision, suffix) {
     };
 }
 
-if (arguments && arguments.length) {
-    star.apply(this, arguments);
-}

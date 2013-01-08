@@ -4,6 +4,10 @@ function Vector(x, y) {
         return new Vector(x, y);
     }
     
+    if (x instanceof Object) {
+        x = x.x;
+        y = x.y;
+    }
     if (typeof x !== 'number' || typeof y !== 'number') {
         x = y = 0;
     }
